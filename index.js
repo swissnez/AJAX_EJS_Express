@@ -1,10 +1,17 @@
 const http = require("http");
 const express = require("express");
 const ejs = require("ejs");
-const path = require("path");
+const path = require("path"); // used with app.set to join cwd dir aka __dirname ...
 const app = express();
+
+const redditData = require(__dirname+"/data.json");
+app.set(express.static(path.join(__dirname,"/public")));
+
 app.set("view engine",ejs);
 app.set("views",path.join(__dirname,"/views"));
+//const staticPub = __dirname+"/public";
+//console.log(staticPub)
+
 
 
 //console.dir(app);
@@ -25,14 +32,27 @@ app.get("/apple/:appletype",(req,res)=>{
    res.send(appletype); // returns /apple/myrandomquery 
 })
 
+app.get("/reddit/:rParams",(req,res)=>{
+   const {rParams} = req.params;
+   const data = redditData[rParams]; // e.g lets say socccer /reddit/soccer 
+   res.render("soccer.ejs",{...data}) // spread the object into item instead of passing a whole obj
+})
 
 app.get("/search",(req,res)=>{
    res.send(req.query);
 })
 
 
-app.get("/ejs",(req,res)=>{
-   res.render("home.ejs");
+app.get("/ejs/:randomNumParam",(req,res)=>{
+   const {randomNumParam} = req.params
+   const randomNumber = Math.floor(Math.random(60)*randomNumParam);
+   res.render("home.ejs",{randomNumber:randomNumber});
+})
+
+
+app.get("/params/:paramsData",(req,res)=>{
+   const {paramsData} = req.params;
+   res.render("params.ejs",{paramsData});
 })
 
 app.get("/msg",(req,res)=>{
