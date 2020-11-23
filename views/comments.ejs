@@ -1,0 +1,13 @@
+<%-include("partials/head.ejs")%>
+
+<h2> Comments using UL and LI's </h2>
+<ul>
+    <% for (let comment of comments ) { %>
+      <li><%=comment.username%><code> <%=comment.comment%></code></li>
+      
+    <%}%>
+
+</ul>
+
+
+<%- include("partials/pagination.ejs")%>
