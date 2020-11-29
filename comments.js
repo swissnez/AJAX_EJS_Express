@@ -1,4 +1,4 @@
-module.exports.comments =   [
+export let comments =   [
   {
      username: "RikoLipps",
      comment: "I am so fine with blue ears"

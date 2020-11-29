@@ -3,8 +3,8 @@
 <h2> Comments using UL and LI's </h2>
 <ul>
     <% for (let comment of comments ) { %>
-      <li><%=comment.username%><code> <%=comment.comment%></code></li>
-      
+      <li><%=comment.username%><code> <%=comment.comment%></code></li> <b><%=comment.id%></b>
+      <a href="/comments/<%=comment.id%>">Detail</a>
     <%}%>
 
 </ul>

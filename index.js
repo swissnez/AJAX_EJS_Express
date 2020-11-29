@@ -1,65 +1,87 @@
-const http = require("http");
+
 const express = require("express");
+const methodOverride = require('method-override')
 const ejs = require("ejs");
 const path = require("path"); // used with app.set to join cwd dir aka __dirname ...
 //const { urlencoded } = require("express"); ??
 const app = express();
+const {v4: uuid} = require("uuid"); // use uuid string as v4 hence {}
 
 const redditData = require(__dirname+"/data.json");
-//const comments = require(__dirname+"/comments.js");
+//import {comments} from ".comments";
+
+app.use(methodOverride,("__method"));
 app.use(express.static(path.join(__dirname,"/public")));
 app.use(express.urlencoded({extended:true})); // allows POST method to use the req.body
 app.use(express.json()); // use JSON payload requests when posting 
 app.set("view engine",ejs);
 app.set("views",path.join(__dirname,"/views"));
-//const staticPub = __dirname+"/public";
-//console.log(staticPub)
 
-
-//console.dir(app);
 
 const port = 8080 || process.env.port;
 
 app.listen(port,()=>{console.log(port);})
 
-// app.use((err)=>{
-//   console.log("REQ");
-//   if(err) {
-//     //console.log(err);
-//   }
-// })
 
+// ***** simulated DB *****
 const comments = [
    {
+      id: uuid(),
       username: "RikoLipps",
       comment: "I am so fine with blue ears"
    },
    {
+      id: uuid(),
       username: "SummySunny",
       comment: "felix was mine onces"
    },
-   {
+   {  id: uuid(),
       username: "dorathygobble",
       comment: "indie go go, here we go!!!"
    }
  ]
  
 
-app.get("/comments",(req,res)=>{
+
+ const findComment = (id)=>{
+   return comments.find(c=> c.id === parseInt(id) || id);
+}
+
+ app.get("/comments",(req,res)=>{
    res.render("comments.ejs",{comments});
+})
+
+
+app.get("/comments/:id",(req,res)=>{
+   const {id} = req.params;
+   const returnedComment = findComment(id);
+   if (returnedComment) res.render("commentsShow.ejs",{returnedComment});
+})
+
+app.get("/comments/:id/edit",(req,res)=>{
+   const {id} = req.params;
+   const editComment = findComment(id);
+   res.render("edit.ejs",{editComment})
 })
 
 app.post("/comments",(req,res)=>{
    const {username,comment} = req.body;
-   comments.push({username,comment}); // push in an object of the key values
+   comments.push({id: uuid(),username,comment}); // push in an object of the key values
    if (comment === null ) res.json(comments); // return a json output in the browser
    res.redirect("/comments")
 })
 
+app.patch("/comments/:id",(req,res)=>{
+   const {id} = req.params;
+   const newComment = req.body.comment;
+   const foundComment = findComment(id);
+   foundComment.comment = newComment;
+   res.redirect("/comments")
+})
 
 
-app.get("/comments/new",(req,res)=>{
-res.render("commentsNew.ejs",{});
+app.get("/commentsNew/new",(req,res)=>{
+   res.render("commentsNew.ejs",{});
 })
 
 app.get("/forms",(req,res)=>{
@@ -136,3 +158,10 @@ app.get("*",(req,res)=>{
 //   })
 //   .listen(8080); //the server object listens on port 8080
 
+
+// app.use((err)=>{
+//   console.log("REQ");
+//   if(err) {
+//     //console.log(err);
+//   }
+// })
