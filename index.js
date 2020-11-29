@@ -42,10 +42,9 @@ let comments = [
  ]
  
 
+//Nice ES6 cut down version of findComment()
+ const findComment = (id)=> comments.find(c=> c.id === parseInt(id) || id);
 
- const findComment = (id)=>{
-   return comments.find(c=> c.id === parseInt(id) || id);
-}
 
 
  app.get("/comments",(req,res)=>{
