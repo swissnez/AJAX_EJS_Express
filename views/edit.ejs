@@ -8,7 +8,7 @@
   <%-include("partials/head")%>
 </head>
 <body>
-  <form action="/comments/<%=editComment.id%>/edit?_method=PATCH" method="post">
+  <form method="POST" action="/comments/<%=editComment.id%>?_method=PATCH">
     <textarea name="comment" id="" cols="30" rows="10">
       <%=editComment.comment%>
     </textarea>

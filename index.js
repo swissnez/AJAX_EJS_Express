@@ -10,7 +10,7 @@ const {v4: uuid} = require("uuid"); // use uuid string as v4 hence {}
 const redditData = require(__dirname+"/data.json");
 //import {comments} from ".comments";
 
-app.use(methodOverride,("__method"));
+app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname,"/public")));
 app.use(express.urlencoded({extended:true})); // allows POST method to use the req.body
 app.use(express.json()); // use JSON payload requests when posting 
@@ -24,7 +24,7 @@ app.listen(port,()=>{console.log(port);})
 
 
 // ***** simulated DB *****
-const comments = [
+let comments = [
    {
       id: uuid(),
       username: "RikoLipps",
@@ -47,10 +47,14 @@ const comments = [
    return comments.find(c=> c.id === parseInt(id) || id);
 }
 
+
  app.get("/comments",(req,res)=>{
    res.render("comments.ejs",{comments});
 })
 
+app.get("/comments/new",(req,res)=>{
+   res.render("commentsNew.ejs",{});
+})
 
 app.get("/comments/:id",(req,res)=>{
    const {id} = req.params;
@@ -79,10 +83,16 @@ app.patch("/comments/:id",(req,res)=>{
    res.redirect("/comments")
 })
 
+app.delete("/comments/:id",(req,res)=>{
+   const {id} = req.params;
+   comments = comments.filter(c=> c.id !== id);
+   res.redirect("/comments");
+});
 
-app.get("/commentsNew/new",(req,res)=>{
-   res.render("commentsNew.ejs",{});
-})
+
+
+
+
 
 app.get("/forms",(req,res)=>{
    res.render("Form.ejs");

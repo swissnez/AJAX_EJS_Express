@@ -10,5 +10,8 @@
 <body>
   <h1><%=returnedComment.username%></h1>
   <h4><%=returnedComment.comment%></h4>
+  <form method="POST" action="/comments/<%=returnedComment.id%>?_method=DELETE">
+  <button>DELETE</button>
+  </form>
 </body>
 </html>
